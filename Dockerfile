@@ -1,12 +1,20 @@
-FROM node:20-alpine as builder
-WORKDIR /app
-COPY package.json package-lock.json ./ 
-RUN npm install
-COPY . .
-RUN npm run build
+# Use Node.js version 20 as the base image
+FROM node:20
 
-FROM node:20-alpine
+# Set the working directory inside the container  
 WORKDIR /app
-COPY --from=builder /app/dist ./
+
+# Copy the application files to the working directory   
+COPY . .
+
+# Install dependencies
+RUN npm install
+
+# Build the website
+RUN npm run build 
+
+# Expose the desired port (change it according to the application)
 EXPOSE 3000
-CMD ["node", "index.js"]
+
+# Start the application
+CMD [ "npm", "start" ]
