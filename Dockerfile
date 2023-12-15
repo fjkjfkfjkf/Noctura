@@ -1,8 +1,12 @@
-FROM node:20.4-bookworm-slim
-WORKDIR /usr/src/app
+FROM node:20-alpine as builder
+WORKDIR /app
+COPY package.json package-lock.json ./ 
+RUN npm install
 COPY . .
-RUN npm i -g pnpm
-RUN pnpm i
 RUN npm run build
-EXPOSE 8080
-CMD ["npm", "start"]
+
+FROM node:20-alpine
+WORKDIR /app
+COPY --from=builder /app/dist ./
+EXPOSE 3000
+CMD ["node", "index.js"]
