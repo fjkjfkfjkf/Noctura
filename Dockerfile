@@ -1,20 +1,23 @@
-# Use Node.js version 20 as the base image
-FROM node:20
+FROM node:20-alpine
 
-# Set the working directory inside the container  
+# Set working directory
 WORKDIR /app
 
-# Copy the application files to the working directory   
-COPY . .
+# Copy package.json and package-lock.json  
+COPY package.json ./
+COPY pnpm-lock.yaml ./
 
 # Install dependencies
-RUN npm install
+RUN pnpm install
 
-# Build the website
-RUN npm run build 
+# Copy source files  
+COPY . .
 
-# Expose the desired port (change it according to the application)
+# Build frontend
+RUN npm run build
+
+# Expose port
 EXPOSE 3000
 
-# Start the application
-CMD [ "npm", "start" ]
+# Start app  
+CMD [ "node", "index.js" ]
